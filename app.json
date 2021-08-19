@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "rn-mti-scanner",
-    "slug": "rn-mti-scanner",
+    "name": "MTI Express",
+    "slug": "mti-express",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,16 +17,28 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera",
+        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-barcode-scanner",
+      "expo-file-system"
+    ],
+    "description": ""
   }
 }
