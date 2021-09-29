@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import * as Haptics from 'expo-haptics';
 
 import Styles from '../components/Style';
 
@@ -16,6 +17,8 @@ const Scanner = (props) => {
   }, []);
 
   const handleBarCodeScanned = ({ type, data }) => {
+    Haptics.impactAsync('heavy');
+    setScanned(true)
     props.nav.navigate('Info Screen', {
       type:type,
       data:data
@@ -44,8 +47,10 @@ const Scanner = (props) => {
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
       />
-      <View style={Styles.scannerTarget}></View>
-      {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
+      <View style={Styles.scannerTarget}>
+        <Text>{scanned ? 'Scanner inactive' : 'Scanner active'}</Text>
+      </View>
+      {/* {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />} */}
     </View>
   );
 }

@@ -1,21 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, View, Text, StyleSheet, TouchableOpacity, StatusBar, ScrollView, Touchable, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, LogBox } from 'react-native';
+import { Alert, View, Text, StyleSheet, TouchableOpacity, useWindowDimensions, StatusBar, ScrollView, Touchable, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, LogBox } from 'react-native';
 import Styles from "../components/Style";
 import SubmitBtn from './SubmitBtn';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import * as FileSystem from 'expo-file-system';
 
 const Cart = (props) => {
 
-  const [cart, setCart] = useState(props.cart);
+  const [cart, setCart] = useState([]);
+
+  const refreshCartFromAsyncStorage = async () => {
+    let lcart = await AsyncStorage.getItem('@cart');
+    if(lcart == null) {
+      AsyncStorage.setItem('@cart', JSON.stringify([]))
+      setCart([])
+    } else {
+      setCart(JSON.parse(lcart))
+    }
+  }
+
+  useEffect(() => {
+    refreshCartFromAsyncStorage();
+    console.log(cart)
+  }, [])
 
   const [input__upc, setInput__upc] = useState(props.route.predefined_sku ? props.route.predefined_sku : '');
   const [input__qty, setInput__qty] = useState();
 
-  const [ServiceRep, setServiceRep] = useState({email:'mcrane@myerstiresupply.com'})
-
-  useEffect(() => {
-    LogBox.ignoreLogs(['Warning: ...']);
-  });
+  const [assignedUpcValue, setAssignedUpcValue] = useState(props.route.predefined_sku ? props.route.predefined_sku : '');
+  const [assignedQtyValue, setAssignedQtyValue] = useState();
 
   const removeItemFromCart = (idx) => {
     Alert.alert(
@@ -36,63 +50,111 @@ const Cart = (props) => {
               }
             })
             setCart(newcart)
-            props.setCart(newcart)
+            AsyncStorage.setItem('@cart', JSON.stringify(newcart))
           },
           style:'destructive'
         },
       ]
     )
+    refreshCartFromAsyncStorage();
     // This is the worst imaginable way to do this but i cant think of array functions rn
     
   }
 
-  const addItemToCart = (upc, title, qty) => {
-    setCart(cart.concat({
-      upc:upc,
-      title:title,
-      qty:qty
-    }));
-    props.setCart(cart.concat({
-      upc:upc,
-      title:title,
-      qty,qty
-    }));
+  const addItemToCart = async (upc, qty) => {
+    Keyboard.dismiss();
+    console.log(`https://mts-api-2a3on.ondigitalocean.app/v1/num/${typeof(upc) == 'undefined' ? 'NO_PROD' : upc}`)
+    const dataApiResponse = await fetch(`https://mts-api-2a3on.ondigitalocean.app/v1/num/${typeof(upc) == 'undefined' ? 'NO_PROD' : upc}`);
+    const dataApiJSON = await dataApiResponse.json();
+    console.log(dataApiJSON);
+    if(dataApiJSON.error == undefined) {
+      const title = dataApiJSON[0].desc_line_1;
+      const supplier = dataApiJSON[0].supplier_name;
+
+      setInput__qty('');
+      setInput__upc('');
+
+      setCart(cart.concat({
+        upc:upc,
+        title:title,
+        supplier:supplier,
+        qty:qty
+      }));
+      await AsyncStorage.setItem('@cart', JSON.stringify(cart.concat({
+        upc:upc,
+        title:title,
+        supplier:supplier,
+        qty:qty
+      })));
+    } else {
+      Alert.alert(
+        'Unrecognized product code',
+        'We do not have anything matching that product code in our database. Would you like to add it to your cart anyway?',
+      [
+        {
+          text: 'Yes, add it to my cart',
+          onPress: async () => {
+            AsyncStorage.setItem('@cart', JSON.stringify(cart.concat({
+              upc:upc,
+              qty:qty
+            })));
+            setCart(cart.concat({
+              upc:upc,
+              qty:qty
+            }));
+            setInput__qty('');
+            setInput__upc('');
+          }
+        },
+        {
+          text: 'No, do not add it to my cart',
+          onPress: () => {}
+        }
+      ])
+    }
+    refreshCartFromAsyncStorage();
   }
 
   return (
-    <View>
-      <View style={Styles.addSheet}>
-        <TextInput
-          style={{...Styles.input, ...Styles.code, ...{width:'50%',marginRight:2.5, paddingRight:2.5}}}
-          placeholder="Enter a UPC"
-          keyboardType="number-pad"
-          autoFocus={props.openInput ? true : false}
-          onChangeText={(e) => setInput__upc(e)}
-          clearButtonMode="while-editing"
-          defaultValue={props.route.predefined_sku ? props.route.predefined_sku : ''}
-        />
-        <TextInput
-          style={{...Styles.input, ...Styles.code, ...{width:'20%',marginRight:2.5, paddingRight:2.5}}}
-          placeholder="Qty"
-          keyboardType="number-pad"
-          autoFocus={props.route.openQtyInput ? true : false}
-          clearButtonMode="while-editing"
-          onChangeText={(e) => setInput__qty(e)}
-        />
-        <TouchableOpacity 
-          style={{...Styles.addBtn, ...{marginLeft:2.5, paddingLeft:2.5}}}
-          onPress={() => addItemToCart(input__upc, '', input__qty)}
-        >
-          <Text style={Styles.addBtn__text}>Add</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={{...Styles.tr, ...{flex:0,borderBottomWidth:4}}}>
-        <Text style={Styles.td}>UPC</Text>
-        <Text style={Styles.td}>Title</Text>
-        <Text style={Styles.td}>Qty</Text>
-      </View>
+    <View style={{maxHeight:(useWindowDimensions().height < 680 ? '70%' : '88%')}}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView style={Styles.cartSV}>
+        <View>
+          <View style={Styles.addSheet}>
+            <Text>{
+    console.log(useWindowDimensions().height)}</Text>
+            <TextInput
+              style={{...Styles.input, ...Styles.code, ...{width:'50%',marginRight:'1%', paddingRight:'1%'}}}
+              placeholder="Enter a SKU"
+              keyboardType="number-pad"
+              autoFocus={props.openInput ? true : false}
+              onChangeText={(e) => setInput__upc(e)}
+              clearButtonMode="while-editing"
+              defaultValue={props.route.predefined_sku ? props.route.predefined_sku : ''}
+              value={input__upc}
+            />
+            <TextInput
+              style={{...Styles.input, ...Styles.code, ...{width:'20%',marginRight:'1%', paddingRight:'1%'}}}
+              placeholder="Qty"
+              keyboardType="number-pad"
+              autoFocus={props.route.openQtyInput ? true : false}
+              clearButtonMode="while-editing"
+              onChangeText={(e) => setInput__qty(e)}
+              value={input__qty}
+            />
+            <TouchableOpacity 
+              style={{...Styles.addBtn, ...{marginRight:'1%', paddingLeft:'1%'}}}
+              onPress={() => addItemToCart(input__upc, input__qty)}
+            >
+              <Text style={Styles.addBtn__text}>Add</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{...Styles.tr, ...{flex:0,borderBottomWidth:4}}}>
+            <Text style={Styles.td}>UPC</Text>
+            <Text style={Styles.td}>Title</Text>
+            <Text style={Styles.td}>Qty</Text>
+          </View>
+          
+          <KeyboardAwareScrollView style={Styles.cartSV}>
           {
             cart.length == 0 ? <Text style={{...Styles.tr, ...Styles.td, ...{width:'100%'}}}>Your cart is empty</Text> : (
               cart.map((data, iterator) => (
@@ -109,14 +171,39 @@ const Cart = (props) => {
               ))
             )
           }
-        </ScrollView>
+          </KeyboardAwareScrollView>
+          <View style={{margin:10}}>
+            <TouchableOpacity onPress={() => {props.nav.navigate('Scanner')}} style={{...Styles.button, ...{width:'100%'}}}>
+              <Text style={Styles.buttonText}>Back to scanner</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => {
+              Alert.alert(
+                'Empty Cart',
+                'Do you want to empty your cart?',
+                [
+                  {
+                    text: 'Yep! I\'m done with this cart',
+                    onPress: async () => {
+                      await AsyncStorage.setItem('@cart', JSON.stringify([]));
+                      refreshCartFromAsyncStorage()
+                    },
+                    style: 'destructive'
+                  },
+                  {
+                    text: 'I want to keep this cart',
+                    onPress: () => {},
+                    style: 'default'
+                  },
+                ],
+                { cancelable: false }
+              );
+            }} style={{...Styles.button, ...{width:'100%'}}}>
+              <Text style={Styles.buttonText}>Empty cart</Text>
+            </TouchableOpacity>
+            <SubmitBtn cart={cart} nav={props.nav} triggerNewCart={() => refreshCartFromAsyncStorage()} />
+          </View>
+        </View>
       </TouchableWithoutFeedback>
-      <View style={{margin:10}}>
-        {/* <TouchableOpacity onPress={() => {Linking.openURL(`mailto:${ServiceRep.Email}`)}} style={{...Styles.button, ...{width:'100%'}}}>
-          <Text style={Styles.buttonText}>Submit Order</Text>
-        </TouchableOpacity> */}
-        <SubmitBtn cart={cart} />
-      </View>
     </View>
   )
 }

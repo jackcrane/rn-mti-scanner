@@ -11,7 +11,7 @@ export default StyleSheet.create({
     padding:10
   },
   code:{
-    fontFamily:Platform.os === 'android' ? 'monospace' : 'Courier',
+    fontFamily:Platform.os === 'android' ? 'monospace' : 'Arial',
   },
   scannerTarget:{
     width:250,
@@ -26,7 +26,7 @@ export default StyleSheet.create({
     height: 179/1.5,
   },
   spacer:{
-    height:'25%'
+    height:'20%'
   },
   button:{
     padding:10,
@@ -112,5 +112,19 @@ export default StyleSheet.create({
   },
   description:{
     fontSize:28
+  },
+  cartSV:{
+    maxHeight:'65%'
+  },
+  errorMessage:{
+    fontSize:24,
+    color:'red'
+  },
+  fieldset:{
+
+  },
+  fieldlabel:{
+    fontSize:24,
+    margin:10,
   }
 })

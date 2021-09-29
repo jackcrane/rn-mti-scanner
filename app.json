@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "MTI Express",
-    "slug": "mti-express",
-    "version": "1.0.0",
+    "name": "MTS Express",
+    "slug": "mts-express",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -19,21 +19,25 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera",
-        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
-      }
+        "NSCameraUsageDescription": "Allow MTS Express to access your camera",
+        "NSMicrophoneUsageDescription": "Allow MTS Express to access your microphone"
+      },
+      "bundleIdentifier": "com.mts.express"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "permissions": [
-        "android.permission.CAMERA"
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.INTERNET"
       ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/icon.png"
     },
     "plugins": [
       "expo-barcode-scanner",
