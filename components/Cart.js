@@ -120,12 +120,9 @@ const Cart = (props) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View>
           <View style={Styles.addSheet}>
-            <Text>{
-    console.log(useWindowDimensions().height)}</Text>
             <TextInput
               style={{...Styles.input, ...Styles.code, ...{width:'50%',marginRight:'1%', paddingRight:'1%'}}}
               placeholder="Enter a SKU"
-              keyboardType="number-pad"
               autoFocus={props.openInput ? true : false}
               onChangeText={(e) => setInput__upc(e)}
               clearButtonMode="while-editing"
@@ -137,7 +134,6 @@ const Cart = (props) => {
               placeholder="Qty"
               keyboardType="number-pad"
               autoFocus={props.route.openQtyInput ? true : false}
-              clearButtonMode="while-editing"
               onChangeText={(e) => setInput__qty(e)}
               value={input__qty}
             />
