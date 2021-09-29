@@ -97,8 +97,8 @@ const Profiles = (props) => {
               <TextInput keyboardType='email-address' style={Styles.input} value={input__cemail} placeholder='Customer Email' onChangeText={(e) => setInput__cemail(e)} />
             </View>
             <View style={Styles.fieldset}>
-              <Text style={{...Styles.fieldlabel, marginBottom:0}}>MTS Rep Email</Text>
-              <TextInput keyboardType='email-address' style={Styles.input} value={input__remail} placeholder='MTS Rep Email' onChangeText={(e) => setInput__remail(e)} />
+              <Text style={{...Styles.fieldlabel, marginBottom:0}}>Send order to email</Text>
+              <TextInput keyboardType='email-address' style={Styles.input} value={input__remail} placeholder='Send order to email' onChangeText={(e) => setInput__remail(e)} />
             </View>
 
             <View style={{margin:10}}>
