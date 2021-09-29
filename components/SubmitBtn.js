@@ -10,24 +10,27 @@ import { StorageAccessFramework } from 'expo-file-system';
 const SubmitBtn = (props) => {
 
   let orderuuid = uuid.v4();
+  let po;
 
   const convertToCSV = (arr, customer) => {
     let dtr = 'qty, sku, title, supplier,,,customer information, customer information';
     arr.forEach((row, iterator) => {
       if(iterator == 0) {
-        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Name, ${customer.customer_name.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title?.split(',').join("~")}, ${row.supplier?.split(',').join("~")},,,Customer Name, ${customer.customer_name.split(',').join("~")}`;
       } else if(iterator == 1) {
-        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Company, ${customer.customer_company.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title?.split(',').join("~")}, ${row.supplier?.split(',').join("~")},,,Customer Company, ${customer.customer_company.split(',').join("~")}`;
       } else if(iterator == 2) {
-        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Phone Number, ${customer.customer_phonenum.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title?.split(',').join("~")}, ${row.supplier?.split(',').join("~")},,,Customer Phone Number, ${customer.customer_phonenum.split(',').join("~")}`;
       } else if(iterator == 3) {
-        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Email, ${customer.customer_email.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title?.split(',').join("~")}, ${row.supplier?.split(',').join("~")},,,Customer Email, ${customer.customer_email.split(',').join("~")}`;
       } else if(iterator == 4) {
-        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Number, ${customer.customer_number.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title?.split(',').join("~")}, ${row.supplier?.split(',').join("~")},,,Customer Number, ${customer.customer_number.split(',').join("~")}`;
       } else if(iterator == 5) {
-        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Order UUID, ${orderuuid.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title?.split(',').join("~")}, ${row.supplier?.split(',').join("~")},,,Order UUID, ${orderuuid.split(',').join("~")}`;
+      } else if(iterator == 6) {
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title?.split(',').join("~")}, ${row.supplier?.split(',').join("~")},,,Purchase Order, ${po || 'No PO supplied'}`;
       } else {
-        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title?.split(',').join("~")}, ${row.supplier?.split(',').join("~")}`;
       }
     })
 
@@ -35,6 +38,30 @@ const SubmitBtn = (props) => {
   }
 
   const processData = async () => {
+
+    po = await (() => {
+      return new Promise((resolve, reject) => {
+        if(props.requestPO) {
+          Alert.prompt(
+            'Purchase Order',
+            '',
+            [
+              {
+                text: "No PO",
+                onPress: () => {resolve()},
+                style: "destructive",
+              },
+              {
+                text: "OK",
+                onPress: (text) => {resolve(text); console.log(text)},
+                style: "default",
+              },
+            ]
+          )
+        }
+      })
+    })()
+
     const profiles = JSON.parse(await AsyncStorage.getItem('@profiles'));
     let profOptions = [{
       text: 'Create a new customer',
@@ -51,7 +78,7 @@ const SubmitBtn = (props) => {
       console.log(profiles[idx]);
       // Create a CSV File:
       let cart_ = props.cart;
-      while(cart_.length < 5) {
+      while(cart_.length < 7) {
         cart_.push({
           upc:'',
           qty:'',
@@ -69,6 +96,8 @@ const SubmitBtn = (props) => {
         subject:`MTS Order ID ${orderuuid}`,
         body:`
           Order number ${orderuuid}
+          <br><br>
+          ${typeof(po) === 'string' ? 'Purchase Order: ' + po : ''}
         `,
         attachments:[FileSystem.documentDirectory + 'order.csv'],
         isHtml:false,

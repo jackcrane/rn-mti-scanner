@@ -196,7 +196,7 @@ const Cart = (props) => {
             }} style={{...Styles.button, ...{width:'100%'}}}>
               <Text style={Styles.buttonText}>Empty cart</Text>
             </TouchableOpacity>
-            <SubmitBtn cart={cart} nav={props.nav} triggerNewCart={() => refreshCartFromAsyncStorage()} />
+            <SubmitBtn cart={cart} nav={props.nav} triggerNewCart={() => refreshCartFromAsyncStorage()} requestPO />
           </View>
         </View>
       </TouchableWithoutFeedback>
