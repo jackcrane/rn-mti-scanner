@@ -12,22 +12,22 @@ const SubmitBtn = (props) => {
   let orderuuid = uuid.v4();
 
   const convertToCSV = (arr, customer) => {
-    let dtr = 'sku, qty, title, supplier,,,customer information, customer information';
+    let dtr = 'qty, sku, title, supplier,,,customer information, customer information';
     arr.forEach((row, iterator) => {
       if(iterator == 0) {
-        dtr += `\n${row.upc.split(',').join("~")}, ${row.qty.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Name, ${customer.customer_name.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Name, ${customer.customer_name.split(',').join("~")}`;
       } else if(iterator == 1) {
-        dtr += `\n${row.upc.split(',').join("~")}, ${row.qty.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Company, ${customer.customer_company.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Company, ${customer.customer_company.split(',').join("~")}`;
       } else if(iterator == 2) {
-        dtr += `\n${row.upc.split(',').join("~")}, ${row.qty.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Phone Number, ${customer.customer_phonenum.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Phone Number, ${customer.customer_phonenum.split(',').join("~")}`;
       } else if(iterator == 3) {
-        dtr += `\n${row.upc.split(',').join("~")}, ${row.qty.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Email, ${customer.customer_email.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Email, ${customer.customer_email.split(',').join("~")}`;
       } else if(iterator == 4) {
-        dtr += `\n${row.upc.split(',').join("~")}, ${row.qty.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Number, ${customer.customer_number.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Customer Number, ${customer.customer_number.split(',').join("~")}`;
       } else if(iterator == 5) {
-        dtr += `\n${row.upc.split(',').join("~")}, ${row.qty.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Order UUID, ${orderuuid.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")},,,Order UUID, ${orderuuid.split(',').join("~")}`;
       } else {
-        dtr += `\n${row.upc.split(',').join("~")}, ${row.qty.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")}`;
+        dtr += `\n${row.qty.split(',').join("~")}, ${row.upc.split(',').join("~")}, ${row.title.split(',').join("~")}, ${row.supplier.split(',').join("~")}`;
       }
     })
 
