@@ -29,13 +29,11 @@ const Info = (props) => {
 
   useState(async () => {
     let uptime = await Device.getUptimeAsync();
-    setUptime(id);
+    setUptime(uptime);
     setUptimeReady(true);
   }, [props.nav])
+  
 
-  useState(() => {
-    console.log(Platform)
-  }, [])
 
   return (
     <View style={Styles.paddedContainer}>

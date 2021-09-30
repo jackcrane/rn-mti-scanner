@@ -6,7 +6,7 @@ import Styles from "./Style";
 
 const Profiles = (props) => {
 
-  const { pre_prof } = props.route.params;
+  // const { pre_prof } = props.route.params;
 
   const [ profiles, setProfiles ] = useState([]);
 
@@ -73,9 +73,6 @@ const Profiles = (props) => {
       <KeyboardAwareScrollView>
         <TouchableWithoutFeedback onPress={() => {}}>
           <View>
-            <Text>
-              {pre_prof}
-            </Text>
             <View style={Styles.fieldset}>
               <Text style={{...Styles.fieldlabel, marginBottom:0}}>Customer Name</Text>
               <TextInput style={Styles.input} value={input__cname} placeholder='Customer Name' onChangeText={(e) => setInput__cname(e)} />
