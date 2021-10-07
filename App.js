@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import Toast from 'react-native-toast-message';
 
 import Scanner from './components/Scanner';
 import Info from './components/Info';
@@ -84,6 +85,7 @@ function App() {
         <Stack.Screen name="Profile" component={Profile} options={{ headerShown: true }} />
         <Stack.Screen name="Cart" component={Cart} initialParams={{cart:cart}} options={{ headerShown: true }} />
       </Stack.Navigator>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
     </NavigationContainer>
   );
 }

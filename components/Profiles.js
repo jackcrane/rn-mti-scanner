@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Styles from "../components/Style";
 import { useFocusEffect } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 
 const Profiles = (props) => {
 
@@ -33,9 +34,11 @@ const Profiles = (props) => {
         setProfiles(JSON.parse(profs));
       }
     })()
-  }, []);
+  }, [props.nav]);
 
   const removeProfile = (idx) => {
+    // DEPENDENT FUNCTION IN PROFILE.JS. IF YOU EDIT THIS FUNCTION, MAKE SURE TO UPDATE THAT FUNCTION AS WELL.
+
     Alert.alert(
       "Are you sure?", 
       'You are about to delete this profile. This cannot be undone',
@@ -55,6 +58,11 @@ const Profiles = (props) => {
             })
             setProfiles(newprofiles)
             AsyncStorage.setItem('@profiles', JSON.stringify(newprofiles))
+            Toast.show({
+              type: 'error',
+              position: 'bottom',
+              text1: 'Profile Deleted.',
+            })
           },
           style:'destructive'
         },
@@ -76,11 +84,37 @@ const Profiles = (props) => {
                   <Text style={{...Styles.code, ...Styles.td}}>{data.customer_company || 'Unknown'}</Text>
                   <Text style={{...Styles.code, ...Styles.td}}>{data.customer_email || 'Unknown'}</Text>
 
-                  <TouchableOpacity onPress={() => {removeProfile(iterator)}} style={{...Styles.td, ...{textAlign:'right'}}}>
-                    <Text style={{...Styles.td, ...{textAlign:'right'}}}>❌</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => {removeProfile(iterator)}} style={{...Styles.td, ...{textAlign:'right'}}}>
-                    <Text style={{...Styles.td, ...{textAlign:'right'}}}>✎</Text>
+                  <TouchableOpacity onPress={() => {
+                    Alert.alert(
+                      'Delete or edit profile?',
+                      '',
+                      [
+                        {
+                          text:'Delete',
+                          onPress: () => removeProfile(iterator),
+                          style: 'destructive'
+                        },
+                        {
+                          text:'Edit',
+                          onPress: () => {
+                            props.nav.navigate('Profile', {
+                              pre_prof:data,
+                              iterator:iterator,
+                              // removeProfile:removeProfile
+                            })
+                          },
+                          style:'default'
+                        },
+                        {
+                          text:'Cancel',
+                          onPress: () => {},
+                          style:'cancel'
+                        }
+                      ]
+                    )
+                    // removeProfile(iterator)
+                  }} style={{...Styles.td, ...{textAlign:'right'}}} >
+                    <Text style={{...Styles.td, ...{textAlign:'right'}}} >❌</Text>
                   </TouchableOpacity>
                 </View>
               </TouchableWithoutFeedback>

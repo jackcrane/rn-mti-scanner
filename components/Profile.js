@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Alert, View, Text, StyleSheet, TouchableOpacity, StatusBar, ScrollView, Touchable, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, LogBox } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Toast from 'react-native-toast-message';
 import Styles from "./Style";
 
 const Profiles = (props) => {
 
-  // const { pre_prof } = props.route.params;
+  const pre_prof = props.route.params?.pre_prof;
+  const prof_iterator = props.route.params?.iterator;
 
   const [ profiles, setProfiles ] = useState([]);
 
@@ -24,7 +26,18 @@ const Profiles = (props) => {
     })();
   }, [])
 
-  const saveProf = async () => {
+  useEffect(() => {
+    if(typeof(pre_prof) !== 'undefined') {
+      setInput__cname(pre_prof.customer_name);
+      setInput__ccompany(pre_prof.customer_company);
+      setInput__cemail(pre_prof.customer_email);
+      setInput__cnumber(pre_prof.customer_number);
+      setInput__cphonenum(pre_prof.customer_phonenum);
+      setInput__remail(pre_prof.rep_email);
+    }
+  }, [pre_prof])
+
+  const saveProf = async (message = 'Customer added', profiles = profiles) => {
     if([
       input__cname == '',
       input__cnumber == '',
@@ -57,15 +70,36 @@ const Profiles = (props) => {
         })
       ))
 
-      Alert.alert(
-        'Customer added',
-        '',
-        [{
-          text:"OK",
-          onPress: () => props.nav.goBack()
-        }]
-      )
+      // Alert.alert(
+      //   message,
+      //   '',
+      //   [{
+      //     text:"OK",
+      //     onPress: () => props.nav.goBack()
+      //   }]
+      // )
+      Toast.show({
+        type: 'success',
+        position: 'bottom',
+        text1: message,
+      });
+      props.nav.goBack()
+
     }
+  }
+
+  const removeProfile = async (idx) => {
+    // props.route.params?.removeProfile(idx);
+    
+    let newprofiles = []
+    profiles.forEach((e, i) => {
+      if(i != idx) {
+        newprofiles.push(e);
+      }
+    })
+    await AsyncStorage.setItem('@profiles', JSON.stringify(newprofiles))
+    setProfiles(newprofiles)
+    saveProf('Customer updated', newprofiles)
   }
 
   return (
@@ -79,7 +113,7 @@ const Profiles = (props) => {
             </View>
             <View style={Styles.fieldset}>
               <Text style={{...Styles.fieldlabel, marginBottom:0}}>Customer Number</Text>
-              <TextInput keyboardType='number-pad' style={Styles.input} value={input__cnumber} placeholder='Customer Number' onChangeText={(e) => setInput__cnumber(e)} />
+              <TextInput style={Styles.input} value={input__cnumber} placeholder='Customer Number' onChangeText={(e) => setInput__cnumber(e)} />
             </View>
             <View style={Styles.fieldset}>
               <Text style={{...Styles.fieldlabel, marginBottom:0}}>Customer Company</Text>
@@ -99,15 +133,20 @@ const Profiles = (props) => {
             </View>
 
             <View style={{margin:10}}>
-              <TouchableOpacity onPress={() => {saveProf()}} style={{...Styles.button, ...{width:'100%'}}}>
-                <Text style={Styles.buttonText}>Save</Text>
-              </TouchableOpacity>
+              {typeof(pre_prof) === 'undefined' ? (
+                <TouchableOpacity onPress={() => {saveProf()}} style={{...Styles.button, ...{width:'100%'}}}>
+                  <Text style={Styles.buttonText}>Save</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={async () => {removeProfile(prof_iterator);}} style={{...Styles.button, ...{width:'100%'}}}>
+                  <Text style={Styles.buttonText}>Update</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
           
         </TouchableWithoutFeedback>
         </KeyboardAwareScrollView>
-        
     </View>
   )
 }
