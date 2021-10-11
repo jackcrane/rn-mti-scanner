@@ -6,6 +6,7 @@ import uuid from 'react-native-uuid';
 import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageAccessFramework } from 'expo-file-system';
+import Toast from 'react-native-toast-message';
 
 const SubmitBtn = (props) => {
 
@@ -14,7 +15,7 @@ const SubmitBtn = (props) => {
 
   const sanitize = (str) => {
     str = str?.split(',')?.join('~')
-    str = str?.split('"')?.join('\"')
+    str = str?.split('"')?.join('""')
     console.log(str)
     return str;
   }
@@ -23,21 +24,21 @@ const SubmitBtn = (props) => {
     let dtr = 'qty, sku, title, supplier,,,customer information, customer information';
     arr.forEach((row, iterator) => {
       if(iterator == 0) {
-        dtr += `\n${sanitize(row.qty)}, ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Customer Name, ${sanitize(customer.customer_name)}`;
+        dtr += `\n"${sanitize(row.qty)}", ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Customer Name, ${sanitize(customer.customer_name)}`;
       } else if(iterator == 1) {
-        dtr += `\n${sanitize(row.qty)}, ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Customer Company, ${sanitize(customer.customer_company)}`;
+        dtr += `\n"${sanitize(row.qty)}", ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Customer Company, ${sanitize(customer.customer_company)}`;
       } else if(iterator == 2) {
-        dtr += `\n${sanitize(row.qty)}, ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Customer Phone Number, ${sanitize(customer.customer_phonenum)}`;
+        dtr += `\n"${sanitize(row.qty)}", ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Customer Phone Number, ${sanitize(customer.customer_phonenum)}`;
       } else if(iterator == 3) {
-        dtr += `\n${sanitize(row.qty)}, ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Customer Email, ${sanitize(customer.customer_email)}`;
+        dtr += `\n"${sanitize(row.qty)}", ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Customer Email, ${sanitize(customer.customer_email)}`;
       } else if(iterator == 4) {
-        dtr += `\n${sanitize(row.qty)}, ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Customer Number, ${sanitize(customer.customer_number)}`;
+        dtr += `\n"${sanitize(row.qty)}", ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Customer Number, ${sanitize(customer.customer_number)}`;
       } else if(iterator == 5) {
-        dtr += `\n${sanitize(row.qty)}, ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Order UUID, ${sanitize(orderuuid)}`;
+        dtr += `\n"${sanitize(row.qty)}", ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Order UUID, ${sanitize(orderuuid)}`;
       } else if(iterator == 6) {
-        dtr += `\n${sanitize(row.qty)}, ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Purchase Order, ${sanitize(po) || 'No PO supplied'}`;
+        dtr += `\n"${sanitize(row.qty)}", ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)},,,Purchase Order, ${sanitize(po) || 'No PO supplied'}`;
       } else {
-        dtr += `\n${sanitize(row.qty)}, ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)}`;
+        dtr += `\n"${sanitize(row.qty)}", ${sanitize(row.upc)}, ${sanitize(row.title)}, ${sanitize(row.supplier)}`;
       }
     })
 
@@ -111,14 +112,6 @@ const SubmitBtn = (props) => {
       })
 
       if(email.status == 'sent') {
-        // Alert.alert('You have sent an email to your MTS rep with your order. Would you like to empty your cart?',
-        // [{
-        //   text: 'Yep! I\'m done with this cart',
-        //   onPress: () => {
-        //     AsyncStorage.setItem('@cart', JSON.stringify([]))
-        //   }
-        // }]
-        // )
         Alert.alert(
           'Cart sent to MTS',
           'Do you want to empty your cart?',

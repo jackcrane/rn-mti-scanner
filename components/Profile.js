@@ -37,6 +37,39 @@ const Profiles = (props) => {
     }
   }, [pre_prof])
 
+  let [ companyRequestTimeout, setCompanyRequestTimeout ] = useState();
+  const requestCompanyFromMTS = async (customer_number) => {
+    Toast.hide();
+    clearTimeout(companyRequestTimeout);
+    setCompanyRequestTimeout(
+      setTimeout(async () => {
+        try {
+          dataApiResponse = await fetch(`https://mts-api-2a3on.ondigitalocean.app/v1/cus/${typeof(customer_number) == 'undefined' ? 'NO_PROD' : customer_number}`);
+          dataApiJSON = await dataApiResponse.json();
+        } catch (error) {
+          // Ignore
+        }
+        if(dataApiJSON.error && dataApiJSON.error === 'No customer found with matching customer number') {
+          Toast.show({
+            text1: 'Customer not in database',
+            text2: 'You can still continue, but autofill is unavailible',
+            position: 'bottom',
+            type: 'error'
+          })
+        } else {
+          Toast.hide();
+          Toast.show({
+            text1: 'Customer found',
+            position: 'bottom'
+          })
+          // console.log(dataApiJSON)
+          console.log(dataApiJSON[0].customer_name)
+          setInput__ccompany(dataApiJSON[0].customer_name)
+        }
+      }, 500)
+    )
+  }
+
   const saveProf = async (message = 'Customer added', profiles = profiles) => {
     if([
       input__cname == '',
@@ -46,7 +79,12 @@ const Profiles = (props) => {
       input__cemail == '',
       input__remail == '',
     ].some((e) => {return e})) {
-      alert('There are missing fields. Each field must be filled').
+      Toast.show({
+        text1: 'There are missing fields',
+        text2: 'Each field must be filled.',
+        position: 'bottom',
+        type: 'error'
+      })
       return;
     } else {
 
@@ -70,14 +108,6 @@ const Profiles = (props) => {
         })
       ))
 
-      // Alert.alert(
-      //   message,
-      //   '',
-      //   [{
-      //     text:"OK",
-      //     onPress: () => props.nav.goBack()
-      //   }]
-      // )
       Toast.show({
         type: 'success',
         position: 'bottom',
@@ -108,16 +138,16 @@ const Profiles = (props) => {
         <TouchableWithoutFeedback onPress={() => {}}>
           <View>
             <View style={Styles.fieldset}>
-              <Text style={{...Styles.fieldlabel, marginBottom:0}}>Customer Name</Text>
-              <TextInput style={Styles.input} value={input__cname} placeholder='Customer Name' onChangeText={(e) => setInput__cname(e)} />
-            </View>
-            <View style={Styles.fieldset}>
               <Text style={{...Styles.fieldlabel, marginBottom:0}}>Customer Number</Text>
-              <TextInput style={Styles.input} value={input__cnumber} placeholder='Customer Number' onChangeText={(e) => setInput__cnumber(e)} />
+              <TextInput keyboardType="numbers-and-punctuation" style={Styles.input} value={input__cnumber} placeholder='Customer Number' onChangeText={(e) => {setInput__cnumber(e); requestCompanyFromMTS(e)}} />
             </View>
             <View style={Styles.fieldset}>
               <Text style={{...Styles.fieldlabel, marginBottom:0}}>Customer Company</Text>
               <TextInput style={Styles.input} value={input__ccompany} placeholder='Customer Company' onChangeText={(e) => setInput__ccompany(e)} />
+            </View>
+            <View style={Styles.fieldset}>
+              <Text style={{...Styles.fieldlabel, marginBottom:0}}>Contact Name</Text>
+              <TextInput style={Styles.input} value={input__cname} placeholder='Customer Name' onChangeText={(e) => setInput__cname(e)} />
             </View>
             <View style={Styles.fieldset}>
               <Text style={{...Styles.fieldlabel, marginBottom:0}}>Customer Phone Number</Text>
@@ -134,7 +164,7 @@ const Profiles = (props) => {
 
             <View style={{margin:10}}>
               {typeof(pre_prof) === 'undefined' ? (
-                <TouchableOpacity onPress={() => {saveProf()}} style={{...Styles.button, ...{width:'100%'}}}>
+                <TouchableOpacity onPress={() => {saveProf('Profile Saved', profiles)}} style={{...Styles.button, ...{width:'100%'}}}>
                   <Text style={Styles.buttonText}>Save</Text>
                 </TouchableOpacity>
               ) : (

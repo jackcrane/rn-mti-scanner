@@ -5,6 +5,7 @@ import SubmitBtn from './SubmitBtn';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import * as FileSystem from 'expo-file-system';
+import Toast from 'react-native-toast-message';
 
 const Cart = (props) => {
 
@@ -22,7 +23,6 @@ const Cart = (props) => {
 
   useEffect(() => {
     refreshCartFromAsyncStorage();
-    console.log(cart)
   }, [])
 
   const [input__upc, setInput__upc] = useState(props.route.predefined_sku ? props.route.predefined_sku : '');
@@ -63,10 +63,18 @@ const Cart = (props) => {
 
   const addItemToCart = async (upc, qty) => {
     Keyboard.dismiss();
-    console.log(`https://mts-api-2a3on.ondigitalocean.app/v1/num/${typeof(upc) == 'undefined' ? 'NO_PROD' : upc}`)
-    const dataApiResponse = await fetch(`https://mts-api-2a3on.ondigitalocean.app/v1/num/${typeof(upc) == 'undefined' ? 'NO_PROD' : upc}`);
-    const dataApiJSON = await dataApiResponse.json();
-    console.log(dataApiJSON);
+    let dataApiResponse;
+    let dataApiJSON;
+    try {
+      dataApiResponse = await fetch(`https://mts-api-2a3on.ondigitalocean.app/v1/num/${typeof(upc) == 'undefined' ? 'NO_PROD' : upc}`);
+      dataApiJSON = await dataApiResponse.json();
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong.',
+        position: 'bottom'
+      })
+    }
     if(dataApiJSON.error == undefined) {
       const title = dataApiJSON[0].desc_line_1;
       const supplier = dataApiJSON[0].supplier_name;
@@ -123,6 +131,7 @@ const Cart = (props) => {
             <TextInput
               style={{...Styles.input, ...Styles.code, ...{width:'50%',marginRight:'1%', paddingRight:'1%'}}}
               placeholder="Enter a SKU"
+              keyboardType="numbers-and-punctuation"
               autoFocus={props.openInput ? true : false}
               onChangeText={(e) => setInput__upc(e)}
               clearButtonMode="while-editing"

@@ -114,7 +114,7 @@ const Profiles = (props) => {
                     )
                     // removeProfile(iterator)
                   }} style={{...Styles.td, ...{textAlign:'right'}}} >
-                    <Text style={{...Styles.td, ...{textAlign:'right'}}} >❌</Text>
+                    <Text style={{...Styles.td, ...{textAlign:'right'}}} >✏️</Text>
                   </TouchableOpacity>
                 </View>
               </TouchableWithoutFeedback>
