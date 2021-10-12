@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import * as Haptics from 'expo-haptics';
-
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import Styles from '../components/Style';
 
 const Scanner = (props) => {

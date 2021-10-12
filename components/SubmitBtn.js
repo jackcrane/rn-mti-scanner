@@ -1,12 +1,10 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, ScrollView, Alert } from 'react-native';
-import * as MailComposer from 'expo-mail-composer';
-import Styles from "../components/Style";
-import uuid from 'react-native-uuid';
-import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StorageAccessFramework } from 'expo-file-system';
-import Toast from 'react-native-toast-message';
+import * as FileSystem from 'expo-file-system';
+import * as MailComposer from 'expo-mail-composer';
+import React from 'react';
+import { Alert, Text, TouchableOpacity } from 'react-native';
+import uuid from 'react-native-uuid';
+import Styles from "../components/Style";
 
 const SubmitBtn = (props) => {
 

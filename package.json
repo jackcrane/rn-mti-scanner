@@ -9,10 +9,8 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "~1.15.0",
-    "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.5",
-    "eml-format": "^0.6.1",
     "expo": "~42.0.0",
     "expo-application": "~3.2.0",
     "expo-barcode-scanner": "~10.2.2",
@@ -24,8 +22,6 @@
     "expo-mail-composer": "~10.2.2",
     "expo-permissions": "~12.1.1",
     "expo-status-bar": "~1.0.4",
-    "expo-updates": "~0.8.2",
-    "fs": "0.0.1-security",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
@@ -37,8 +33,7 @@
     "react-native-screens": "~3.4.0",
     "react-native-toast-message": "^1.6.0",
     "react-native-uuid": "^2.0.1",
-    "react-native-web": "~0.13.12",
-    "sentry-expo": "^4.0.0"
+    "react-native-web": "~0.13.12"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Alert, View, Text, StyleSheet, TouchableOpacity, StatusBar, ScrollView, ActivityIndicator, Platform } from 'react-native';
-import Styles from "./Style";
 import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
+import React, { useState } from 'react';
+import { ActivityIndicator, Platform, ScrollView, StatusBar, Text, View } from 'react-native';
+import Styles from "./Style";
 
 const Info = (props) => {
   const [ installationTimeReady, setInstallationTimeReady ] = useState(false);

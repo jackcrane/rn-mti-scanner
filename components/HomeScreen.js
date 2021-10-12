@@ -1,17 +1,9 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
-import { 
-  View,
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  StatusBar, 
-  TouchableWithoutFeedback, 
-  Image, 
-  Button 
+import {
+  Image, StatusBar, Text, TouchableOpacity, TouchableWithoutFeedback, View
 } from 'react-native';
 import Styles from "../components/Style";
-import { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = (props) => {
 

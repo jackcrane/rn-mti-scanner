@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
-import { useFocusEffect } from '@react-navigation/native';
-
-import Styles from '../components/Style';
 import * as Haptics from 'expo-haptics';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import Styles from '../components/Style';
+
 
 
 const Scanner = (props) => {
