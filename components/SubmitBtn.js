@@ -99,7 +99,7 @@ const SubmitBtn = (props) => {
 
       let email = await MailComposer.composeAsync({
         recipients:[profiles[idx].rep_email],
-        subject:`MTS Order ID ${orderuuid}`,
+        subject:`MTS Order for ${profiles[idx].customer_company}`,
         body:`
           Order number ${orderuuid}
           <br><br>
