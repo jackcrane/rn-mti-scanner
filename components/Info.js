@@ -58,7 +58,7 @@ const Info = (props) => {
           errorMessage == '' ? (
             !productInfoReady ? <ActivityIndicator /> : (
               <View>
-                <Text style={Styles.subtitle}>UPC</Text>
+                <Text style={Styles.subtitle}>Part Number</Text>
                 <Text style={{...Styles.title, ...Styles.code}}>{ data }</Text>
 
                 <Text style={Styles.subtitle}>Title</Text>
